@@ -11,13 +11,15 @@ const server = http.createServer(app);
 const io = ioServer(server, { cors: { origin: "*" } });
 socketManager(io);
 
+const PORT = process.env.PORT || 3001;
+
 async function startServer() {
     // Connect to Mongo
     await mongoConnect();
     // Connect to redis
     await redisClient.connect();
-    server.listen(3001, () => {
-        console.log('Server started running...');
+    server.listen(PORT, () => {
+        console.log(`Server started running on port ${PORT}...`);
     });
 }
 
