@@ -8,23 +8,25 @@ require('dotenv').config();
 
 // Create server from express app
 const server = http.createServer(app);
-
-// set up the socket server and allow all resource to acces the server
 const io = ioServer(server, { cors: { origin: "*" } });
-
-// Manage socket connections
 socketManager(io);
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Listening on ${port}`));
+async function startServer() {
     // Connect to Mongo
     await mongoConnect();
-    // connect to redis
+    // Connect to redis
     await redisClient.connect();
-    console.log('Server started running...');
+    server.listen(3001, () => {
+        console.log('Server started running...');
+    });
+}
+
+startServer().catch(err => {
+    console.error('Failed to start server:', err);
+    process.exit(1);
 });
 
 process.on('uncaughtException', (error) => {
     console.error('Uncaught Exception:', error);
     process.exit(1);
-  });
+});
